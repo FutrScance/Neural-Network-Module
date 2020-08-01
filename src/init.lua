@@ -37,7 +37,7 @@ function module.Run(Network, Inputs, backp)
 				activations[i][o]=0
 				for p=1,#Network[i][o]-1 do --for the number of weights for the current node
 					activations[i][o]=activations[i][o]+Network[i][o][p]*activations[i-1][p]
-				end 
+				end
 				rawactivations[i][o]=activations[i][o]
 				activations[i][o]=Activator(activations[i][o]+Network[i][o][#Network[i][o]])
 			end
@@ -60,7 +60,7 @@ function module.Run(Network, Inputs, backp)
 				activations[i][o]=0
 				for p=1,#Network[i][o]-1 do --for the number of weights for the current node
 					activations[i][o]=activations[i][o]+Network[i][o][p]*activations[i-1][p]
-				end 
+				end
 				activations[i][o]=Activator(activations[i][o]+Network[i][o][#Network[i][o]])
 			end
 		end
@@ -108,11 +108,11 @@ function module.BackPropagate(Network,Inputs,Targets)
 	local gradients={}
 	local curgradients={}
 	local neuralnet=Network
-	
-	
+
+
 	local lr=.1 --learning rate(rate that it learns(duh))
-	
-	
+
+
 	local curerror={}
 	for i=2,#Network do
 		gradients[i]={}
@@ -126,10 +126,10 @@ function module.BackPropagate(Network,Inputs,Targets)
 		end
 	end
 	curgradients=gradients
-	
+
 	local outlayer=#Network --the layer number of the output layer.
 	for i=1,#Inputs do
-		
+
 		for i=2,#Network do
 			for o=1,#Network[i] do
 				for p=1,#Network[i][o] do
@@ -137,7 +137,7 @@ function module.BackPropagate(Network,Inputs,Targets)
 				end
 			end
 		end
-		
+
 		for o=2,#Network do
 			for p=1,#Network[o] do
 				curerror[o][p]=0 --resets the current error of each of the neurons.
@@ -147,7 +147,7 @@ function module.BackPropagate(Network,Inputs,Targets)
 		local outputs=module.Run(Network,Inputs[i],true) --gives us the inputs(not the outputs) for each neuron
 		for o=#Network,2,-1 do
 			local layer=Network[o]
-			
+
 			if o~=#Network then
 				for p=1,#layer do
 					for u=1,#Network[o+1] do
@@ -161,23 +161,23 @@ function module.BackPropagate(Network,Inputs,Targets)
 				end
 			end
 		end
-		
-		
+
+
 		--add to the total gradient
 		for o=2,#Network do
 			for p=1,#Network[o] do
-				for u=1,#Network[o][1]-1 do 
+				for u=1,#Network[o][1]-1 do
 					gradients[o][p][u]=gradients[o][p][u]+curerror[o][p]*outputs[1][o-1][u]
 				end
 				gradients[o][p][#gradients[o][p]]=gradients[o][p][#gradients[o][p]]+biasgrads[o][p]
 			end
 		end
-		
+
 	end
 	lr=-lr/#Targets
 	for o=2,#Network do
 		for p=1,#Network[o] do
-			for u=1,#Network[o][1] do 
+			for u=1,#Network[o][1] do
 				neuralnet[o][p][u]=neuralnet[o][p][u]+gradients[o][p][u]*lr
 			end
 		end
